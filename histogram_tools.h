@@ -14,6 +14,8 @@ class Bins {
         int getIndex(std::vector<int> indices);
         std::vector<std::vector<int>> getIndices(std::vector<int> shape);
 
+        void clear();
+
 };
 
 // This class is used realize the structure of a histogram and to store the data
@@ -33,6 +35,7 @@ class Histogram {
         double binValue(int bin, int feature);
 
         void print();
+        void clear();
 };
 
 ////////////////////////////////////
@@ -107,6 +110,11 @@ void Histogram<T>::print() {
     }
 }
 
+template <typename T>
+void Histogram<T>::clear() {
+    bins.clear();
+}
+
 ////////////////////////////////////
 //// BINS CLASS IMPLEMENTATION /////
 ////////////////////////////////////
@@ -165,4 +173,10 @@ std::vector<std::vector<int>> Bins<T>::getIndices(std::vector<int> shape) {
         }
         return indexList;
     }
+}
+
+template <typename T>
+void Bins<T>::clear() {
+    bins.clear();
+    shape.clear();
 }
