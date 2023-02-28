@@ -2,8 +2,116 @@
 #include <Eigen/Eigenvalues>
 #include <complex>
 
+std::vector<Eigen::Matrix<std::complex<double>, 16,4>> partialTraceMatricesRight {
+    Eigen::Matrix<std::complex<double>, 16, 4>{
+    {1,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,1,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,1,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,1},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    },
+    Eigen::Matrix<std::complex<double>, 16, 4>{
+    {0,0,0,0},
+    {1,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,1,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,1,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,1},
+    {0,0,0,0},
+    {0,0,0,0},
+    },
+    Eigen::Matrix<std::complex<double>, 16, 4>{
+    {0,0,0,0},
+    {0,0,0,0},
+    {1,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,1,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,1,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,1},
+    {0,0,0,0},
+    },
+    Eigen::Matrix<std::complex<double>, 16, 4>{
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {1,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,1,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,1,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,0},
+    {0,0,0,1},
+    },
+};
+
+std::vector<Eigen::Matrix<std::complex<double>, 4, 16>> partialTraceMatricesLeft {
+    Eigen::Matrix<std::complex<double>, 4, 16>{
+    {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0},
+    },
+    Eigen::Matrix<std::complex<double>, 4, 16>{
+    {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0},
+    },
+    Eigen::Matrix<std::complex<double>, 4, 16>{
+    {0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0},
+    },
+    Eigen::Matrix<std::complex<double>, 4, 16>{
+    {0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+    }
+};
+
 namespace Linalg{
-    // public:
+
+        std::complex<double> randomComplex() {
+            double subNormalization = rand() / (double)RAND_MAX;
+            double realPart = rand() / (double)RAND_MAX;
+            std::complex<double> randomNumber = std::complex<double>(sqrt(realPart) , sqrt(1 - realPart));
+            return randomNumber * subNormalization;
+        }
         void swapIJ (Eigen::Matrix4cd& rho, int i, int j, int k, int l) {
             // Swap the elements (i,j) and (k,l) of the matrix rho
             std::complex<float> temp;
@@ -25,15 +133,34 @@ namespace Linalg{
             bool result = partialTranpose2nd(rho).eigenvalues().real().minCoeff() < 0;
             return result;
         }
+        // Eigen::Matrix4cd random4State() {
+        //     // Generate a random 4x4 complex positive matrix with trace = 1
+        //     Eigen::Matrix4cd rho = Eigen::Matrix4cd::Random();
+        //     rho = rho * rho.adjoint();
+        //     rho = rho / rho.trace();
+        //     return rho;
+        // }
+        Eigen::MatrixXcd random4State() {
+            Eigen::MatrixXcd psi{{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
+            std::complex<double> norm = 0;
+            
+            for(int i = 0; i < 16; i++) {
+                psi(i,0) = randomComplex();
+                norm += psi(i,0) * std::conj(psi(i,0));
+            }
+            for(int i = 0; i < 16; i++) {
+                psi(i,0) /= std::sqrt(norm);
+            }
 
-
-        Eigen::Matrix4cd random4State() {
-            // Generate a random 4x4 complex positive matrix with trace = 1
-            Eigen::Matrix4cd rho = Eigen::Matrix4cd::Random();
-            rho = rho * rho.adjoint();
-            rho = rho / rho.trace();
+            Eigen::MatrixXcd rho{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
+            Eigen::MatrixXcd psipsi = psi * psi.adjoint();
+            
+            for(int i = 0; i < 4; i++) {
+                rho += partialTraceMatricesLeft[i] * psipsi * partialTraceMatricesRight[i];
+            }
             return rho;
         }
+
         Eigen::Matrix4cd random4Functional() {
             // Generate a random 4x4 complex matrix has abs(trace) = 1
             Eigen::Matrix4cd M = Eigen::Matrix4cd::Random();
@@ -43,25 +170,12 @@ namespace Linalg{
             return M;
         }
         Eigen::Matrix4cd random4Witness() {
-            std::complex<double> alpha, beta, gamma, norm;
-            // alpha = std::complex<double>(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX);
-            // beta = std::complex<double>(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX);
-            // gamma = std::complex<double>(rand() / (double)RAND_MAX, rand() / (double)RAND_MAX);
+            std::complex<double> alpha, beta, gamma;
 
-            // alpha = alpha / sqrt(alpha * std::conj(alpha)) * std::complex(rand() / (double) RAND_MAX, 0);
-            // beta = beta / sqrt(beta * std::conj(beta)) std::complex(rand() / (double) RAND_MAX, 0);
-            // gamma = gamma / sqrt(gamma * std::conj(gamma)) std::complex(rand() / (double) RAND_MAX, 0);
-
-            alpha = std::complex<double>(rand() / (double)RAND_MAX, 0);
-            beta = std::complex<double>(rand() / (double)RAND_MAX, 0);
+            alpha = randomComplex();
+            beta = randomComplex();
             gamma = std::complex<double>(rand() / (double)RAND_MAX, 0);
 
-            if (rand() % 2 == 0) {
-                alpha = -alpha;
-            }
-            if (rand() % 2 == 0) {
-                beta = -beta;
-            }
             if (rand() % 2 == 0) {
                 gamma = -gamma;
             }
@@ -79,12 +193,12 @@ namespace Linalg{
             M(2, 2) = one - gamma;
             M(3, 3) = one + gamma;
 
-            M(3, 0) = alpha + beta;
             M(0, 3) = alpha + beta;
-            M(2, 1) = alpha - beta;
+            M(3, 0) = std::conj(M(0, 3));
             M(1, 2) = alpha - beta;
+            M(2, 1) = std::conj(M(1,2));
 
-            M = M / (M).trace();
+            M = M / (M * M).trace();
             return M;
         }
 

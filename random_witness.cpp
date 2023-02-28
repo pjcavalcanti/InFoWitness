@@ -28,8 +28,10 @@ int main (int argc, char *argv[]) {
     outfile << "I_trMrho_e,I_sign_e\n";
 
     // simulation parameters
-    int nFunctionals = 10000;
-    int nSamples = 20000;
+    // int nFunctionals = 10000;
+    // int nSamples = 20000;
+    int nFunctionals = 100;
+    int nSamples = 1000;
 
     // variables
     double trMrho;

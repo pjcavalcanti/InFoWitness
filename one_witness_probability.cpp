@@ -22,11 +22,6 @@ int main (int argc, char *argv[]) {
     // initialize a histogram
     Histogram<int> hist;
 
-    // set up the output file
-    std::ofstream outfile;
-    outfile.open("one_witness.csv");
-    outfile << "I_trMrho_e,I_sign_e\n";
-
     // simulation parameters
     int nSamples = 20000;
 
@@ -38,6 +33,20 @@ int main (int argc, char *argv[]) {
     JointProbability joint;
     
     M = Linalg::random4Witness();
+
+    // Eigen::VectorXcd eigenvals = M.eigenvalues();
+
+    // std::cout << "eigenvals = \n" << eigenvals << std::endl;
+
+    // WORKING WITNESS
+    // M(0, 0) = std::complex<double>(0.5, 0);
+    // // M(1, 1) = 1;
+    // // M(2, 2) = 1;
+    // M(3, 3) = std::complex<double>(0.5, 0);
+    // M(1, 2) = std::complex<double>(0.5, 0);
+    // M(2, 1) = std::complex<double>(0.5, 0);
+    // M = M / sqrt(((M * M).trace()));
+
     hist = Histogram<int>();
     hist.addFeature("tr(Mrho)", 100, -1, 1);
     hist.addFeature("entanglement", 2, -0.5, 1.5);
@@ -54,19 +63,11 @@ int main (int argc, char *argv[]) {
     }
 
     joint = JointProbability(hist);
+    hist.saveData("one_witness_histogram.csv");
     joint.saveData("one_witness_distribution.csv");
-//    I_tr_e = joint.MutualInformation(0, 1);
-//    I_sign_e = joint.WitnessInformation(0, 1);
-//    outfile << I_tr_e << "," << I_sign_e << "\n";
-
-
-//    std::cout << "nSamples = " << nSamples << std::endl;
-//    std::cout << "I(tr(Mrho) : entanglement) = " << I_tr_e << std::endl;
-//    std::cout << "I(sign : entanglement) = " << I_sign_e << "\n\n";
 
     hist.clear();
     joint.clear();
-    
-    outfile.close();
+
     return 0;
 }

@@ -58,7 +58,9 @@
         "typeinfo": "cpp",
         "dense": "cpp",
         "eigenvalues": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "chrono": "cpp",
+        "optional": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "disabled"
 }
