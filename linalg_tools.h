@@ -158,7 +158,7 @@ namespace Linalg{
         }
 
         Eigen::Matrix4cd random4Functional() {
-            // Generate a random 4x4 complex matrix has abs(trace) = 1
+            // Generate a random 4x4 hermitian matrix that has norm = 1
             Eigen::Matrix4cd M = Eigen::Matrix4cd::Random();
             Eigen::Matrix4cd N = M.adjoint();
             M = M + N;
@@ -178,11 +178,7 @@ namespace Linalg{
 
             std::complex<double> one(1, 0);
             
-            // std::cout << "alpha = " << alpha << std::endl;
-            // std::cout << "beta = " << beta << std::endl;
-            // std::cout << "gamma = " << gamma << std::endl;
-            // std::cout << "one = " << one << std::endl;
-            // Generate a random 4x4 complex matrix has abs(trace) = 1
+            // Make sure the witness has norm = 1
             Eigen::Matrix4cd M;
             M(0, 0) = one + gamma;
             M(1, 1) = one - gamma;
