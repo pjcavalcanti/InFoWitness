@@ -133,28 +133,24 @@ namespace Linalg{
             bool result = partialTranpose2nd(rho).eigenvalues().real().minCoeff() < 0;
             return result;
         }
-        // Eigen::Matrix4cd random4State() {
-        //     // Generate a random 4x4 complex positive matrix with trace = 1
-        //     Eigen::Matrix4cd rho = Eigen::Matrix4cd::Random();
-        //     rho = rho * rho.adjoint();
-        //     rho = rho / rho.trace();
-        //     return rho;
-        // }
         Eigen::MatrixXcd random4State() {
+            // Start with an empty 16x1 matrix
             Eigen::MatrixXcd psi{{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0},{0}};
             std::complex<double> norm = 0;
             
+            // Fill it with random complex numbers
             for(int i = 0; i < 16; i++) {
                 psi(i,0) = randomComplex();
                 norm += psi(i,0) * std::conj(psi(i,0));
             }
+            // Normalize the state
             for(int i = 0; i < 16; i++) {
                 psi(i,0) /= std::sqrt(norm);
             }
-
+            // Calculate the density matrix of the state
             Eigen::MatrixXcd rho{{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
             Eigen::MatrixXcd psipsi = psi * psi.adjoint();
-            
+            // Return the partial trace of the density matrix over the second qubit
             for(int i = 0; i < 4; i++) {
                 rho += partialTraceMatricesLeft[i] * psipsi * partialTraceMatricesRight[i];
             }

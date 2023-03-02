@@ -28,10 +28,8 @@ int main (int argc, char *argv[]) {
     outfile << "I_trMrho_e,I_sign_e\n";
 
     // simulation parameters
-    // int nFunctionals = 10000;
-    // int nSamples = 20000;
-    int nFunctionals = 100;
-    int nSamples = 1000;
+    int nFunctionals = 10000;
+    int nSamples = 100000;
 
     // variables
     double trMrho;
@@ -41,6 +39,11 @@ int main (int argc, char *argv[]) {
     Eigen::Matrix4cd M;
     Eigen::Matrix4cd rho;
     JointProbability joint;
+
+    std::vector<Eigen::Matrix4cd> rhos;
+    for (int i = 0; i < nSamples; i++) {
+        rhos.push_back(Linalg::random4State());
+    }
     
     for (int f = 0; f < nFunctionals; f++) {
         M = Linalg::random4Witness();
@@ -49,7 +52,7 @@ int main (int argc, char *argv[]) {
         hist.addFeature("entanglement", 2, -0.5, 1.5);
 
         for (int i = 0; i < nSamples; i++) {
-            rho = Linalg::random4State();
+            rho = rhos[i];
             trMrho = InnerProductMatrixRho(M, rho);
             entanglement = Linalg::isEntangledPPT(rho);
             if (entanglement) {
@@ -64,6 +67,7 @@ int main (int argc, char *argv[]) {
         I_sign_e = joint.WitnessInformation(0, 1);
         outfile << I_tr_e << "," << I_sign_e << "\n";
 
+        std::cout << "Witness number " << f << " of " << nFunctionals << "\n";
         std::cout << "nSamples = " << nSamples << std::endl;
         std::cout << "I(tr(Mrho) : entanglement) = " << I_tr_e << std::endl;
         std::cout << "I(sign : entanglement) = " << I_sign_e << "\n\n";
